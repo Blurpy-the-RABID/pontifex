@@ -12,6 +12,8 @@ namespace VincentFantini {
         int origMessageLength; // This variable will contain the number of characters in the user's plaintext message.
         int sjLocation = 0; // This variable will contain the location of the Small Joker card.
         int ljLocation = 0; // This variable will contain the location of the Large Joker card.
+		int[]messageNumbers; // This array will store the numerical values of the user's plaintext message.
+		int[]keystreamNumbers; // This array will store the numerical values of the keystream numbers.
 
         // Next, we create the playing cards and assign an integer value to each card based on their value in the Pontifex encryption algorithm.
         // The cards are sorted in their numerical values, and the suits are arranged in bridge order (Clubs, then Diamonds, then Hearts, then Spades).
@@ -52,13 +54,17 @@ namespace VincentFantini {
         }
 
         // This method will prompt the user for the message they wish to encrypt, and will calculate how many characters are within the message.
-        public void getMessage() {
+        public int getMessage() {
             Console.Write("Enter the message that you wish to encrypt: ");
             origMessage = Console.ReadLine();
 			origMessage = origMessage.ToUpper();
             origMessageLength = origMessage.Length;
-            Console.WriteLine("Message to encrypt: {0}", origMessage);
-            Console.WriteLine("Length of message: {0}", origMessageLength);
+			messageNumbers = new int[origMessageLength];
+			keystreamNumbers = new int[origMessageLength];
+			for (int i = 0; i < messageNumbers.Length; i++) {
+				messageNumbers[i] = (origMessage[i] - 'A') + 1;
+			}
+			return origMessageLength;
 		}
 
         public void step1SJMove() {
@@ -100,14 +106,16 @@ namespace VincentFantini {
             // Now that we've found the Large Joker, we will now shift its position two spaces down within the deck.
             // If its starting position is on the bottom of the deck, it will be shifted to the position immediately after the second card in the deck.
             // If the Large Joker is located one card above the bottom card in the deck, it's to be shifted to just below the top card.
-            deck.RemoveAt(ljLocation);
             if (ljLocation == deck.Count - 1) {
+				deck.RemoveAt(ljLocation);
                 deck.Insert(2, Cards.LJ);
             }
             else if (ljLocation == deck.Count - 2) {
+				deck.RemoveAt(ljLocation);
                 deck.Insert(1, Cards.LJ);
             }
             else {
+				deck.RemoveAt(ljLocation);
                 deck.Insert(ljLocation + 2, Cards.LJ);
             }
 
@@ -158,7 +166,6 @@ namespace VincentFantini {
                     }
                     else if (sjLocation > 0) {
                         for (int i = 0; i < deck.Count && (int)deck[i] != 53; i++) {
-                            Console.WriteLine("Card {0} is located above the Small Joker.", deck[i]);
                             deckAboveFJ.Add(deck[i]);
                         }
                     }
@@ -171,7 +178,6 @@ namespace VincentFantini {
                     }
                     else if (ljLocation < deck.Count - 1) {
                         for (int i = ljLocation + 1; i < deck.Count && (int)deck[i] != 0; i++) {
-                            Console.WriteLine("Card {0} is located below the Large Joker.", deck[i]);
                             deckBelowSJ.Add(deck[i]);
                         }
                     }
@@ -187,7 +193,6 @@ namespace VincentFantini {
                     }
                     else if (ljLocation > 0) {
                         for (int i = 0; i < deck.Count && (int)deck[i] != 0; i++) {
-                            Console.WriteLine("Card {0} is located above the Large Joker.", deck[i]);
                             deckAboveFJ.Add(deck[i]);
                         }
                     }
@@ -200,7 +205,6 @@ namespace VincentFantini {
                     }
                     else if (sjLocation < deck.Count - 1) {
                         for (int i = sjLocation + 1; i < deck.Count && (int)deck[i] != 53; i++) {
-                            Console.WriteLine("Card {0} is located below the Small Joker.", deck[i]);
                             deckBelowSJ.Add(deck[i]);
                         }
                     }
@@ -260,6 +264,9 @@ namespace VincentFantini {
                 for (int i = 0; i < deck.Count; i++) {
                     Console.WriteLine("Card {0} is {1}; Value = {2}", i, deck[i], (int)deck[i]);
                 }
+
+				deckAboveFJ.Clear();
+				deckBelowSJ.Clear();
             }
         }
 
@@ -293,6 +300,9 @@ namespace VincentFantini {
             // HOWEVER, if the output card happens to be a Joker, the program will disregard this value and start from Step 1 again.  This process will be handled within Program.cs.
             Console.WriteLine("Step 5:  Find The Output Card");
             int topCardValue = (int)deck[0];
+			if (topCardValue == 0) {
+				topCardValue = 53;
+			}
             Console.WriteLine("Value of Top Card {0} is {1}", deck[0], (int)deck[0]);
             Console.WriteLine("Value of Output Card {0} is {1}", deck[topCardValue], (int)deck[topCardValue]);
             return (int)deck[topCardValue];
@@ -309,6 +319,29 @@ namespace VincentFantini {
                 return keystreamValue;
             }
         }
+
+		public void keystreamRecord(int counter, int keystreamValue) {
+			// This method will record each keystream value into the keystreamNumbers[] array.
+			keystreamNumbers[counter] = keystreamValue;
+		}
+
+		public void plaintextDisplay() {
+			// This method will allow us to see what the plaintext numbers are.
+			Console.Write("Plaintext Numbers = ");
+			for (int i = 0; i < messageNumbers.Length; i++) {
+				Console.Write("{0} ", messageNumbers[i]);
+			}
+			Console.WriteLine();
+		}
+
+		public void keystreamDisplay() {
+			// This method will allow us to see what the keystream numbers are.
+			Console.Write("Keystream Numbers = ");
+			for (int i = 0; i < keystreamNumbers.Length; i++) {
+				Console.Write("{0} ", keystreamNumbers[i]);
+			}
+			Console.WriteLine();
+		}
 
         // To-Do List:
         // - Get the commands in Program.cs to execute for each of the plaintext characters that the user types in during the getMessage() step.
