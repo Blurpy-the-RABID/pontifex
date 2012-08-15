@@ -27,14 +27,18 @@ namespace VincentFantini {
 					outputCardValue = cardDeck.step5OutputCard();
 				}
 
-				// outputCardValue = cardDeck.step6ConvertToNumber(outputCardValue);
-				Console.WriteLine("FINAL Output Card Value = {0}", outputCardValue);
+				outputCardValue = cardDeck.step6ConvertToNumber(outputCardValue);
+				Console.WriteLine("FINAL Keystream Output Card Value = {0}", outputCardValue);
 				cardDeck.keystreamRecord(i, outputCardValue);
 				cardDeck.checkDeck();
-				// Console.ReadKey();
 			}
+            cardDeck.genCiphertextNumber();
+            cardDeck.ciphertextRecord();
+
 			cardDeck.plaintextDisplay();
 			cardDeck.keystreamDisplay();
+            cardDeck.ciphertextNumDisplay();
+            cardDeck.ciphertextLetterDisplay();
         }
     }
 

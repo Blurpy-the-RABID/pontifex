@@ -12,8 +12,13 @@ namespace VincentFantini {
         int origMessageLength; // This variable will contain the number of characters in the user's plaintext message.
         int sjLocation = 0; // This variable will contain the location of the Small Joker card.
         int ljLocation = 0; // This variable will contain the location of the Large Joker card.
-		int[]messageNumbers; // This array will store the numerical values of the user's plaintext message.
+		int[]plaintextNumbers; // This array will store the numerical values of the user's plaintext message.
 		int[]keystreamNumbers; // This array will store the numerical values of the keystream numbers.
+        int[]ciphertextNumbers; // This array will store the numerical values of the final ciphertext numbers.
+        char[] ciphertextLetters; // This array will store the ciphertext message after it's been converted from numbers into letters.
+
+        // The array below will be used in converting the ciphertext numbers into letters; once converted, the ciphertext letters will be stored in the ciphertextLetters[] array.
+        char[] alphabet = new char[26] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
         // Next, we create the playing cards and assign an integer value to each card based on their value in the Pontifex encryption algorithm.
         // The cards are sorted in their numerical values, and the suits are arranged in bridge order (Clubs, then Diamonds, then Hearts, then Spades).
@@ -59,10 +64,12 @@ namespace VincentFantini {
             origMessage = Console.ReadLine();
 			origMessage = origMessage.ToUpper();
             origMessageLength = origMessage.Length;
-			messageNumbers = new int[origMessageLength];
+			plaintextNumbers = new int[origMessageLength];
 			keystreamNumbers = new int[origMessageLength];
-			for (int i = 0; i < messageNumbers.Length; i++) {
-				messageNumbers[i] = (origMessage[i] - 'A') + 1;
+            ciphertextNumbers = new int[origMessageLength];
+            ciphertextLetters = new char[origMessageLength];
+			for (int i = 0; i < plaintextNumbers.Length; i++) {
+				plaintextNumbers[i] = (origMessage[i] - 'A') + 1;
 			}
 			return origMessageLength;
 		}
@@ -311,7 +318,7 @@ namespace VincentFantini {
         public int step6ConvertToNumber(int keystreamValue) {
             // This step checks the keystream value and determines if it's greater than 26 or not.  If it is greater than 26, it reduces the keystream value by 26.
             // If it's not greater than 26, then it leaves it alone and returns it as-is.
-            Console.WriteLine("Step 6:  Convert The Output To A Number");
+            Console.WriteLine("Step 6:  Convert The Keystream Output To A Number");
             if (keystreamValue > 26) {
                 return keystreamValue - 26;
             }
@@ -325,11 +332,30 @@ namespace VincentFantini {
 			keystreamNumbers[counter] = keystreamValue;
 		}
 
-		public void plaintextDisplay() {
+        public void genCiphertextNumber() {
+            // This method will generate the final cipertext numbers into the ciphertextNumbers[] array.
+            for (int i = 0; i < ciphertextNumbers.Length; i++) {
+                int cipherResult = plaintextNumbers[i] + keystreamNumbers[i];
+                if (cipherResult > 26) {
+                    cipherResult -= 26;
+                }
+                ciphertextNumbers[i] = cipherResult;
+            }
+        }
+
+        public void ciphertextRecord() {
+            // This method will convert the ciphertext numbers into letters, and then record each ciphertext letter into the ciphertextLetters[] array.
+            for (int i = 0; i < ciphertextLetters.Length; i++) {
+                char alphabetElement = alphabet[ciphertextNumbers[i] - 1];
+                ciphertextLetters[i] = alphabetElement;
+            }
+        }
+
+        public void plaintextDisplay() {
 			// This method will allow us to see what the plaintext numbers are.
 			Console.Write("Plaintext Numbers = ");
-			for (int i = 0; i < messageNumbers.Length; i++) {
-				Console.Write("{0} ", messageNumbers[i]);
+			for (int i = 0; i < plaintextNumbers.Length; i++) {
+				Console.Write("{0} ", plaintextNumbers[i]);
 			}
 			Console.WriteLine();
 		}
@@ -343,11 +369,25 @@ namespace VincentFantini {
 			Console.WriteLine();
 		}
 
+        public void ciphertextNumDisplay() {
+            // This method will allow us to see what the final ciphertext numbers are.
+            Console.Write("Ciphertext Numbers = ");
+            for (int i = 0; i < ciphertextNumbers.Length; i++) {
+                Console.Write("{0} ", ciphertextNumbers[i]);
+            }
+            Console.WriteLine();
+        }
+
+        public void ciphertextLetterDisplay() {
+            // This method will allow us to see what the final ciphertext letters are.
+            Console.Write("Ciphertext Letters = ");
+            for (int i = 0; i < ciphertextLetters.Length; i++) {
+                Console.Write("{0} ", ciphertextLetters[i]);
+            }
+            Console.WriteLine();
+        }
+
         // To-Do List:
-        // - Get the commands in Program.cs to execute for each of the plaintext characters that the user types in during the getMessage() step.
-        // - Store the output numbers somewhere in the order that they're created (use an array or ArrayList).
-        // - Create a method to convert the plaintext characters from the getMessage() method into numerical values (a = 1...z = 26), and then store
-		//		those numbers somewhere.
         // - Create a method to properly add the plaintext numbers to the keystream numbers (modulo 26) to create the final ciphertext numbers.
         // - Create a method to properly convert the ciphertext numbers into letters (which is the final encrypted message).
         
