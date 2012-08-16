@@ -76,11 +76,9 @@ namespace VincentFantini {
 
         public void step1SJMove() {
             // First, we locate the Small Joker in the deck array.
-            Console.WriteLine("Step 1:  Find & Move The Small Joker");
             for (int i = 0; i < deck.Count; i++) {
                 if ((Cards)deck[i] == Cards.SJ) {
                     sjLocation = i;
-                    Console.WriteLine("Small Joker Location is {0}", sjLocation);
                 }
             }
 
@@ -89,24 +87,20 @@ namespace VincentFantini {
             if (sjLocation == deck.Count - 1) {
                 deck.RemoveAt(sjLocation);
                 deck.Insert(1, Cards.SJ);
+                sjLocation = 1;
             }
             else {
                 deck.RemoveAt(sjLocation);
                 deck.Insert(sjLocation + 1, Cards.SJ);
-            }
-
-            for (int i = 0; i < deck.Count; i++) {
-                Console.WriteLine("Card {0} is {1}; Value = {2}", i, deck[i], (int)deck[i]);
+                sjLocation += 1;
             }
         }
 
         public void step2LJMove() {
             // Next, we locate the Large Joker in the deck array.
-            Console.WriteLine("Step 2:  Find & Move The Large Joker");
             for (int i = 0; i < deck.Count; i++) {
                 if ((Cards)deck[i] == Cards.LJ) {
                     ljLocation = i;
-                    Console.WriteLine("Large Joker Location is {0}", ljLocation);
                 }
             }
 
@@ -116,18 +110,17 @@ namespace VincentFantini {
             if (ljLocation == deck.Count - 1) {
 				deck.RemoveAt(ljLocation);
                 deck.Insert(2, Cards.LJ);
+                ljLocation = 2;
             }
             else if (ljLocation == deck.Count - 2) {
 				deck.RemoveAt(ljLocation);
                 deck.Insert(1, Cards.LJ);
+                ljLocation = 1;
             }
             else {
 				deck.RemoveAt(ljLocation);
                 deck.Insert(ljLocation + 2, Cards.LJ);
-            }
-
-            for (int i = 0; i < deck.Count; i++) {
-                Console.WriteLine("Card {0} is {1}; Value = {2}", i, deck[i], (int)deck[i]);
+                ljLocation += 2;
             }
         }
 
@@ -137,23 +130,7 @@ namespace VincentFantini {
             // To do this, we'll create three separate ArrayLists that will contain each cut of the deck.  We'll then empty out the deck ArrayList,
             // and then concatenate the three separate ArrayLists back into the deck ArrayList in their proper order.
 
-            // First, we locate the Small & Large Jokers in the deck array.
-            Console.WriteLine("Step 3:  Triple-Cut The Deck");
-            for (int i = 0; i < deck.Count; i++) {
-                if ((Cards)deck[i] == Cards.SJ) {
-                    sjLocation = i;
-                    Console.WriteLine("Small Joker Location is {0}", sjLocation);
-                }
-            }
-
-            for (int i = 0; i < deck.Count; i++) {
-                if ((Cards)deck[i] == Cards.LJ) {
-                    ljLocation = i;
-                    Console.WriteLine("Large Joker Location is {0}", ljLocation);
-                }
-            }
-
-            // Now we create a new ArrayList to copy the portions of the deck above & below the Jokers.
+            // We will create two new ArrayLists to copy the portions of the deck above & below the Jokers.
             ArrayList deckAboveFJ = new ArrayList(); // This will copy the portion of the deck ABOVE the First Joker (aka the Joker closest to the top of the deck).
             ArrayList deckBelowSJ = new ArrayList(); // This will copy the portion of the deck BELOW the Second Joker (aka the Joker closest to the bottom of the deck).
 
@@ -169,7 +146,7 @@ namespace VincentFantini {
                 // The following if statement executes if the Small Joker is closer to the top of the deck than the Large Joker.
                 if (sjLocation < ljLocation) {
                     if (sjLocation == 0) { // If the Small Joker is the top card of the deck, then nothing is to be done for this part of Step 3.
-                        Console.WriteLine("The Small Joker is on the top of the deck."); 
+                        // Console.WriteLine("The Small Joker is on the top of the deck."); 
                     }
                     else if (sjLocation > 0) {
                         for (int i = 0; i < deck.Count && (int)deck[i] != 53; i++) {
@@ -181,7 +158,7 @@ namespace VincentFantini {
                     }
 
                     if (ljLocation == deck.Count - 1) { // If the Large Joker is the bottom card of the deck, then nothing is to be done for this part of Step 3.
-                        Console.WriteLine("The Large Joker is on the bottom of the deck.");
+                        // Console.WriteLine("The Large Joker is on the bottom of the deck.");
                     }
                     else if (ljLocation < deck.Count - 1) {
                         for (int i = ljLocation + 1; i < deck.Count && (int)deck[i] != 0; i++) {
@@ -196,7 +173,7 @@ namespace VincentFantini {
                 // The following if statement executes if the Large Joker is closer to the top of the deck than the Small Joker.
                 else if (sjLocation > ljLocation) {
                     if (ljLocation == 0) { // If the Large Joker is the top card of the deck, then nothing is to be done for this part of Step 3.
-                        Console.WriteLine("The Large Joker is on the top of the deck.");
+                        // Console.WriteLine("The Large Joker is on the top of the deck.");
                     }
                     else if (ljLocation > 0) {
                         for (int i = 0; i < deck.Count && (int)deck[i] != 0; i++) {
@@ -208,7 +185,7 @@ namespace VincentFantini {
                     }
 
                     if (sjLocation == deck.Count - 1) { // If the Small Joker is the bottom card of the deck, then nothing is to be done for this part of Step 3.
-                        Console.WriteLine("The Small Joker is on the bottom of the deck.");
+                        // Console.WriteLine("The Small Joker is on the bottom of the deck.");
                     }
                     else if (sjLocation < deck.Count - 1) {
                         for (int i = sjLocation + 1; i < deck.Count && (int)deck[i] != 53; i++) {
@@ -228,50 +205,21 @@ namespace VincentFantini {
                 // we will now remove all of the cards above the First Joker.
                 deck.RemoveRange(0, deckAboveFJ.Count);
                 
-                // Since the deck ArrayList has now been changed in size, we'll relocate the Jokers in order to properly determine which cards are below the Second Joker.
-                for (int i = 0; i < deck.Count; i++) {
-                    if ((Cards)deck[i] == Cards.SJ) {
-                        sjLocation = i;
-                        Console.WriteLine("Small Joker Location is {0}", sjLocation);
-                    }
-                    if ((Cards)deck[i] == Cards.LJ) {
-                        ljLocation = i;
-                        Console.WriteLine("Large Joker Location is {0}", ljLocation);
-                    }
-                }
-
                 // We've found the Jokers, so we quickly determine which is the Second Joker and then remove the cards below it.
                 if (sjLocation > ljLocation) {
+                    sjLocation -= ljLocation; // This will update the Small Joker's locator to reflect its new location since the deck has changed in size.
+                    ljLocation -= ljLocation; // This will update the Large Joker's locator to reflect its new location since the deck has changed in size.
                     deck.RemoveRange(sjLocation + 1, deckBelowSJ.Count);
                 }
                 else if (sjLocation < ljLocation) {
+                    ljLocation -= sjLocation; // This will update the Large Joker's locator to reflect its new location since the deck has changed in size.
+                    sjLocation -= sjLocation; // This will update the Small Joker's locator to reflect its new location since the deck has changed in size.
                     deck.RemoveRange(ljLocation + 1, deckBelowSJ.Count);
-                }
-
-                // The following code displays what's contained within each ArrayList to ensure that the deck has been properly copied above & below the Jokers.
-                // This code can be deleted later when testing & troubleshooting have been completed, and the interface is to be cleaned up.
-                Console.WriteLine("Cards contained within deckAboveFJ {0}:", deckAboveFJ.Count);
-                for (int i = 0; i < deckAboveFJ.Count; i++) {
-                    Console.WriteLine("Card {0} is {1}; Value = {2}", i, deckAboveFJ[i], (int)deckAboveFJ[i]);
-                }
-                Console.WriteLine("Cards contained within deckBelowSJ {0}:", deckBelowSJ.Count);
-                for (int i = 0; i < deckBelowSJ.Count; i++) {
-                    Console.WriteLine("Card {0} is {1}; Value = {2}", i, deckBelowSJ[i], (int)deckBelowSJ[i]);
-                }
-
-                Console.WriteLine("Cards contained within the Deck (between the Jokers){0}:", deck.Count);
-                for (int i = 0; i < deck.Count; i++) {
-                    Console.WriteLine("Card {0} is {1}; Value = {2}", i, deck[i], (int)deck[i]);
                 }
 
                 // Finally, we re-order the deck ArrayList so that the top & bottom cut portions of the deck are swapped.
                 deck.InsertRange(0, deckBelowSJ);
                 deck.InsertRange(deck.Count, deckAboveFJ);
-                Console.WriteLine("Cards contained within the Triple-Cut Deck (Cards Total = {0}):", deck.Count);
-                for (int i = 0; i < deck.Count; i++) {
-                    Console.WriteLine("Card {0} is {1}; Value = {2}", i, deck[i], (int)deck[i]);
-                }
-
 				deckAboveFJ.Clear();
 				deckBelowSJ.Clear();
             }
@@ -280,45 +228,31 @@ namespace VincentFantini {
         public void step4CountCut() {
             // For this step, we check the bottom card in the deck and check its numerical value.  This value is the number of cards we'll be counting from the top of the deck.
             // We then cut the counted cards from the bottom of the deck, and we place them just above the last card in the deck.
-            Console.WriteLine("Step 4:  Count-Cut The Deck");
             int bottomCardValue = (int)deck[deck.Count - 1]; // The bottom card's value is stored in this variable.
-            Console.WriteLine("Bottom Card = {0}; Card Value = {1}", deck[deck.Count - 1], (int)deck[deck.Count - 1]);
-            Console.WriteLine("Cards to be count-cut from the top of the deck = {0}", bottomCardValue);
 
             // Now to count & copy the cards from the top of the deck and store them in an ArrayList.
             ArrayList countCutDeck = new ArrayList(); // This will copy the cards counted from the top of the deck.
-
             for (int i = 0; i < bottomCardValue && i < deck.Count; i++) {
-                Console.WriteLine("Card {0} is count-cut from the top of the deck.", deck[i]);
                 countCutDeck.Add(deck[i]);
             }
-
-            Console.WriteLine("Number of cards in countCutDeck ArrayList = {0}.", countCutDeck.Count);
             deck.RemoveRange(0, bottomCardValue);
             deck.InsertRange(deck.Count - 1, countCutDeck);
-            for (int i = 0; i < deck.Count; i++) {
-                Console.WriteLine("Card {0} is {1}; Value = {2}", i, deck[i], (int)deck[i]);
-            }
         }
 
         public int step5OutputCard() {
             // This step takes the numerical value of the card on the top of the deck.  We then count the cards in the deck starting with the top card on the deck.
             // The card BELOW the card we counted to is the Output Card; its numerical value will be returned by this step.
             // HOWEVER, if the output card happens to be a Joker, the program will disregard this value and start from Step 1 again.  This process will be handled within Program.cs.
-            Console.WriteLine("Step 5:  Find The Output Card");
             int topCardValue = (int)deck[0];
 			if (topCardValue == 0) {
 				topCardValue = 53;
 			}
-            Console.WriteLine("Value of Top Card {0} is {1}", deck[0], (int)deck[0]);
-            Console.WriteLine("Value of Output Card {0} is {1}", deck[topCardValue], (int)deck[topCardValue]);
             return (int)deck[topCardValue];
         }
 
         public int step6ConvertToNumber(int keystreamValue) {
             // This step checks the keystream value and determines if it's greater than 26 or not.  If it is greater than 26, it reduces the keystream value by 26.
             // If it's not greater than 26, then it leaves it alone and returns it as-is.
-            Console.WriteLine("Step 6:  Convert The Keystream Output To A Number");
             if (keystreamValue > 26) {
                 return keystreamValue - 26;
             }
@@ -388,9 +322,6 @@ namespace VincentFantini {
         }
 
         // To-Do List:
-        // - Create a method to properly add the plaintext numbers to the keystream numbers (modulo 26) to create the final ciphertext numbers.
-        // - Create a method to properly convert the ciphertext numbers into letters (which is the final encrypted message).
-        
         // Next Big Step To Take:  Come up with a way to decipher the encrypted message by figuring out how to synchronize a second deck to the first deck.
     }
 }

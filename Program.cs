@@ -28,9 +28,9 @@ namespace VincentFantini {
 				}
 
 				outputCardValue = cardDeck.step6ConvertToNumber(outputCardValue);
-				Console.WriteLine("FINAL Keystream Output Card Value = {0}", outputCardValue);
+				// Console.WriteLine("FINAL Keystream Output Card Value = {0}", outputCardValue);
 				cardDeck.keystreamRecord(i, outputCardValue);
-				cardDeck.checkDeck();
+				// cardDeck.checkDeck();
 			}
             cardDeck.genCiphertextNumber();
             cardDeck.ciphertextRecord();
