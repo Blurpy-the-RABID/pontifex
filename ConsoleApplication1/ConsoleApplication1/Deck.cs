@@ -7,22 +7,12 @@ using System.Text;
 namespace VincentFantini {
 
     class Deck {
-
-        string origMessage; // This variable will contain the user's plaintext message that is to be encrypted.
-        int origMessageLength; // This variable will contain the number of characters in the user's plaintext message.
-        int sjLocation = 0; // This variable will contain the location of the Small Joker card.
-        int ljLocation = 0; // This variable will contain the location of the Large Joker card.
-		int[]plaintextNumbers; // This array will store the numerical values of the user's plaintext message.
-		int[]keystreamNumbers; // This array will store the numerical values of the keystream numbers.
-        int[]ciphertextNumbers; // This array will store the numerical values of the final ciphertext numbers.
-        char[] ciphertextLetters; // This array will store the ciphertext message after it's been converted from numbers into letters.
-
-        // The array below will be used in converting the ciphertext numbers into letters; once converted, the ciphertext letters will be stored in the ciphertextLetters[] array.
-        char[] alphabet = new char[26] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-
-        // Next, we create the playing cards and assign an integer value to each card based on their value in the Pontifex encryption algorithm.
+        // First, we create the playing cards and assign an integer value to each card based on their value in the Pontifex encryption algorithm.
         // The cards are sorted in their numerical values, and the suits are arranged in bridge order (Clubs, then Diamonds, then Hearts, then Spades).
         // At the end of the deck are the Small Joker (SJ) and the Large Joker (LJ).  Both Jokers have the same numerical value (53).
+
+        int sjLocation = 0; // This variable will contain the location of the Small Joker card.
+        int ljLocation = 0; // This variable will contain the location of the Large Joker card.
 
         enum Cards {
             LJ,
@@ -74,39 +64,6 @@ namespace VincentFantini {
             for (int i = 0; i < origDeck.Count; i++) {
                 deck.Add(origDeck[i]);
             }
-        }
-
-        // This method will prompt the user for the message they wish to encrypt, and will calculate how many characters are within the message.
-        public int getPlaintextMessage() {
-            Console.Write("Enter the message that you wish to encrypt: ");
-            origMessage = Console.ReadLine();
-			origMessage = origMessage.ToUpper();
-            origMessageLength = origMessage.Length;
-			plaintextNumbers = new int[origMessageLength];
-			keystreamNumbers = new int[origMessageLength];
-            ciphertextNumbers = new int[origMessageLength];
-            ciphertextLetters = new char[origMessageLength];
-			for (int i = 0; i < plaintextNumbers.Length; i++) {
-				plaintextNumbers[i] = (origMessage[i] - 'A') + 1;
-			}
-			return origMessageLength;
-		}
-
-        // This method will return the cipheretextLetters array for use in deciphering the first Deck's encrypted message.
-        public char[] giveCiphertextLetters() {
-            return ciphertextLetters;
-        }
-
-        // This method initializes the Deck instance with the ciphertextLetters[] array from the original Deck.
-        public int getCiphertextLetters(char[] ciphertextLetterArray) {
-            ciphertextLetters = ciphertextLetterArray;
-            ciphertextNumbers = new int[ciphertextLetters.Length];
-            plaintextNumbers = new int[ciphertextLetters.Length];
-            keystreamNumbers = new int[ciphertextLetters.Length];
-            for (int i = 0; i < ciphertextNumbers.Length; i++) {
-                ciphertextNumbers[i] = (ciphertextLetterArray[i] - 'A') + 1;
-            }
-            return ciphertextLetters.Length;
         }
 
         // First, we locate the Small Joker in the deck array.
@@ -294,68 +251,5 @@ namespace VincentFantini {
                 return keystreamValue;
             }
         }
-
-        // This method will record each keystream value into the keystreamNumbers[] array.
-		public void keystreamRecord(int counter, int keystreamValue) {
-			keystreamNumbers[counter] = keystreamValue;
-		}
-
-        // This method will generate the final cipertext numbers into the ciphertextNumbers[] array.
-        public void genCiphertextNumber() {
-            for (int i = 0; i < ciphertextNumbers.Length; i++) {
-                int cipherResult = plaintextNumbers[i] + keystreamNumbers[i];
-                if (cipherResult > 26) {
-                    cipherResult -= 26;
-                }
-                ciphertextNumbers[i] = cipherResult;
-            }
-        }
-
-        // This method will convert the ciphertext numbers into letters, and then record each ciphertext letter into the ciphertextLetters[] array.
-        public void ciphertextRecord() {
-            for (int i = 0; i < ciphertextLetters.Length; i++) {
-                char alphabetElement = alphabet[ciphertextNumbers[i] - 1];
-                ciphertextLetters[i] = alphabetElement;
-            }
-        }
-
-        // This method will allow us to see what the plaintext numbers are.
-        public void plaintextDisplay() {
-			Console.Write("Plaintext Numbers = ");
-			for (int i = 0; i < plaintextNumbers.Length; i++) {
-				Console.Write("{0} ", plaintextNumbers[i]);
-			}
-			Console.WriteLine();
-		}
-
-        // This method will allow us to see what the keystream numbers are.
-		public void keystreamDisplay() {
-			Console.Write("Keystream Numbers = ");
-			for (int i = 0; i < keystreamNumbers.Length; i++) {
-				Console.Write("{0} ", keystreamNumbers[i]);
-			}
-			Console.WriteLine();
-		}
-
-        // This method will allow us to see what the final ciphertext numbers are.
-        public void ciphertextNumDisplay() {
-            Console.Write("Ciphertext Numbers = ");
-            for (int i = 0; i < ciphertextNumbers.Length; i++) {
-                Console.Write("{0} ", ciphertextNumbers[i]);
-            }
-            Console.WriteLine();
-        }
-
-        // This method will allow us to see what the final ciphertext letters are.
-        public void ciphertextLetterDisplay() {
-            Console.Write("Ciphertext Letters = ");
-            for (int i = 0; i < ciphertextLetters.Length; i++) {
-                Console.Write("{0} ", ciphertextLetters[i]);
-            }
-            Console.WriteLine();
-        }
-
-        // To-Do List:
-        // Next Big Step To Take:  Come up with a way to decipher the encrypted message by figuring out how to synchronize a second deck to the first deck.
     }
 }
