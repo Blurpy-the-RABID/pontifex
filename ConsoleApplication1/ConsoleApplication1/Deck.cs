@@ -44,7 +44,32 @@ namespace VincentFantini {
             Console.Write("Would you like to shuffle the deck (y/n)?: ");
             string shuffleAnswer = Console.ReadLine();
             if (shuffleAnswer == "y") {
-                // Insert deck shuffling commands here.
+                int[] randomizer = new int[54];
+                for (int i = 0; i < randomizer.Length; i++) {
+                    randomizer[i] = i;
+                }
+
+                // I yanked this next block of code from the internet; it's the Fisher-Yates shuffle found here:  http://www.dotnetperls.com/fisher-yates-shuffle
+                Random _random = new Random();
+                var random = _random;
+                for (int i = randomizer.Length; i > 1; i--) {
+                    // Pick random element to swap.
+                    int j = random.Next(i); // 0 <= j <= i-1
+                    // Swap.
+                    int tmp = randomizer[j];
+                    randomizer[j] = randomizer[i - 1];
+                    randomizer[i - 1] = tmp;
+                }
+
+/*              // What I want to do here is to use the Cards enumeration's underlying int values (LJ = 0, AceC = 1, etc.) as a way to randomize the Deck.
+ *              // I'll use the randomized randomizer[] array as a way to create a randomized set of values between 0 and 53, and then I'll add them onto the end of the deck ArrayList.
+ *              // I'll then delete the first 54 elements from the deck ArrayList, leaving only the randomized cards within the Deck itself.
+ *              // NOTE:  This obviously didn't work the way I had hoped it would.  I'll have to continue working on it later.
+ *              
+ *              for (int i = 0; i < randomizer.Length; i++) {
+                    deck.Add(randomizer[i]);
+                }
+*/
             }
         }
 
