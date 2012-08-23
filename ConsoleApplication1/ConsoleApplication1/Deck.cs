@@ -40,15 +40,17 @@ namespace VincentFantini {
             return;
         }
 
+        // This method will ask the user if they wish to shuffle the deck.  If they reply with "y", then it'll shuffle the deck.
         public void randomizeDeck() {
             Console.Write("Would you like to shuffle the deck (y/n)?: ");
             string shuffleAnswer = Console.ReadLine();
             if (shuffleAnswer == "y") {
-                int[] randomizer = new int[54];
+                int[] randomizer = new int[54]; // This array will give us the order in which to shuffle the cards in the deck.
+                // First, we'll assign the numbers 0 - 53 to the randomizer[] array.
                 for (int i = 0; i < randomizer.Length; i++) {
                     randomizer[i] = i;
                 }
-
+                // Next, we'll randomize the order of the elements in the randomizer[] array.
                 // I yanked this next block of code from the internet; it's the Fisher-Yates shuffle found here:  http://www.dotnetperls.com/fisher-yates-shuffle
                 Random _random = new Random();
                 var random = _random;
@@ -60,16 +62,19 @@ namespace VincentFantini {
                     randomizer[j] = randomizer[i - 1];
                     randomizer[i - 1] = tmp;
                 }
-
-/*              // What I want to do here is to use the Cards enumeration's underlying int values (LJ = 0, AceC = 1, etc.) as a way to randomize the Deck.
- *              // I'll use the randomized randomizer[] array as a way to create a randomized set of values between 0 and 53, and then I'll add them onto the end of the deck ArrayList.
- *              // I'll then delete the first 54 elements from the deck ArrayList, leaving only the randomized cards within the Deck itself.
- *              // NOTE:  This obviously didn't work the way I had hoped it would.  I'll have to continue working on it later.
- *              
- *              for (int i = 0; i < randomizer.Length; i++) {
-                    deck.Add(randomizer[i]);
+                
+                // Now that the randomizer[] array is shuffled, we'll use it as a way to seek out the Card with the matching int value and then add that card to the bottom of the deck.
+                for (int i = 0; i < randomizer.Length; i++) {
+                    var matchMaker = deck[randomizer[i]];
+                    deck.Add(matchMaker);
                 }
-*/
+                // Now to get rid of the first 54 cards in the deck ArrayList, leaving only the 54 shuffled cards behind.
+                deck.RemoveRange(0, 54);
+                Console.Write("The first deck has been shuffled.  Would you like to view the deck? (y/n): ");
+                string answer = Console.ReadLine();
+                if (answer == "y") {
+                    this.checkDeck();
+                }
             }
         }
 
